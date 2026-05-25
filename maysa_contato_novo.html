@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maysa Ando · Nutricionista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050508;
+    --blue-deep: #0a1628;
+    --blue-mid: #0d3b6e;
+    --blue-electric: #1a7fe8;
+    --blue-glow: #3fa9ff;
+    --white: #f0f4ff;
+    --white-dim: rgba(240,244,255,0.62);
+    --white-faint: rgba(240,244,255,0.32);
+    --card-bg: rgba(10,22,40,0.72);
+    --border: rgba(63,169,255,0.16);
+    --border-strong: rgba(63,169,255,0.38);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* CANVAS */
+  #bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+  /* GRAIN */
+  body::before {
+    content:''; position:fixed; inset:0; z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size:180px; pointer-events:none; opacity:.6;
+  }
+
+  /* WRAPPER */
+  .wrapper {
+    position:relative; z-index:2;
+    display:flex; flex-direction:column; align-items:center;
+    padding: 0 20px 72px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    width:100%; max-width:620px;
+    padding: 80px 0 0;
+    text-align:center;
+    display:flex; flex-direction:column; align-items:center;
+  }
+
+  .logo-mark {
+    width:46px; height:46px;
+    border:1.5px solid var(--blue-electric); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cormorant Garamond',serif;
+    font-size:20px; font-weight:300;
+    color:var(--blue-glow); margin-bottom:44px;
+    box-shadow:0 0 28px rgba(63,169,255,0.22), inset 0 0 14px rgba(63,169,255,0.06);
+    animation:pulse-logo 4s ease-in-out infinite;
+  }
+  @keyframes pulse-logo {
+    0%,100%{ box-shadow:0 0 28px rgba(63,169,255,0.22),inset 0 0 14px rgba(63,169,255,0.06); }
+    50%{ box-shadow:0 0 52px rgba(63,169,255,0.44),inset 0 0 22px rgba(63,169,255,0.12); }
+  }
+
+  .hero-tag {
+    font-size:10px; letter-spacing:4px; text-transform:uppercase;
+    color:var(--blue-glow); font-weight:400; margin-bottom:20px;
+    opacity:0; animation:rise .8s .1s forwards;
+  }
+
+  .hero-headline {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(34px,7vw,60px);
+    font-weight:300; line-height:1.1; letter-spacing:-.5px;
+    color:var(--white); margin-bottom:20px;
+    opacity:0; animation:rise .9s .25s forwards;
+  }
+  .hero-headline em { font-style:italic; color:var(--blue-glow); }
+
+  .hero-sub {
+    font-size:clamp(15px,2.2vw,17px); line-height:1.7;
+    color:var(--white-dim); max-width:480px;
+    opacity:0; animation:rise .9s .45s forwards;
+  }
+
+  .hero-divider {
+    width:1px; height:64px;
+    background:linear-gradient(to bottom, var(--blue-electric), transparent);
+    margin: 48px auto 0;
+    opacity:0; animation:rise .9s .6s forwards;
+  }
+
+  @keyframes rise {
+    from{ opacity:0; transform:translateY(18px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size:10px; letter-spacing:4px; text-transform:uppercase;
+    color:var(--blue-glow); font-weight:400;
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:24px;
+  }
+  .section-label::before, .section-label::after {
+    content:''; flex:1; height:1px;
+    background:linear-gradient(to right, transparent, rgba(63,169,255,0.3));
+  }
+  .section-label::after {
+    background:linear-gradient(to left, transparent, rgba(63,169,255,0.3));
+  }
+
+  /* ── BLOCKS ── */
+  .block {
+    width:100%; max-width:580px;
+    padding:56px 0 0;
+    opacity:0; transform:translateY(24px);
+    transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .block.visible { opacity:1; transform:translateY(0); }
+
+  /* ── FEEDBACK CARD ── */
+  .feedback-card {
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:40px 36px 36px;
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+    position:relative; overflow:hidden;
+  }
+  .feedback-card::before {
+    content:''; position:absolute; inset:0; border-radius:20px;
+    background:radial-gradient(ellipse 70% 50% at 50% 0%, rgba(63,169,255,0.06), transparent);
+    pointer-events:none;
+  }
+
+  .feedback-icon {
+    font-size:24px; margin-bottom:20px; display:block;
+  }
+
+  .feedback-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(22px,4vw,30px); font-weight:400; line-height:1.2;
+    color:var(--white); margin-bottom:14px;
+  }
+  .feedback-title em { font-style:italic; color:var(--blue-glow); }
+
+  .feedback-body {
+    font-size:15px; line-height:1.75;
+    color:var(--white-dim); margin-bottom:28px;
+  }
+  .feedback-body strong { color:var(--white); font-weight:400; }
+
+  /* ── CONSULTA CARD ── */
+  .consulta-card {
+    background:linear-gradient(145deg, rgba(10,22,40,0.85), rgba(5,5,8,0.95));
+    border:1px solid var(--border-strong);
+    border-radius:20px;
+    padding:40px 36px 36px;
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+    position:relative; overflow:hidden;
+    box-shadow: 0 0 64px rgba(63,169,255,0.07), 0 24px 64px rgba(0,0,0,0.5);
+  }
+  .consulta-card::before {
+    content:''; position:absolute; inset:0; border-radius:20px;
+    background:radial-gradient(ellipse 80% 60% at 50% 110%, rgba(26,127,232,0.12), transparent);
+    pointer-events:none;
+  }
+
+  .consulta-headline {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(26px,5vw,40px); font-weight:400; line-height:1.15;
+    color:var(--white); margin-bottom:6px;
+  }
+  .consulta-headline em { font-style:italic; color:var(--blue-glow); }
+
+  .consulta-sub {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(16px,2.5vw,21px); font-weight:300; font-style:italic;
+    color:var(--white-dim); margin-bottom:24px; line-height:1.4;
+  }
+
+  .consulta-body {
+    font-size:15px; line-height:1.8;
+    color:var(--white-dim); margin-bottom:24px;
+  }
+  .consulta-body strong { color:var(--white); font-weight:400; }
+
+  /* PROVA SOCIAL */
+  .proof {
+    background: rgba(63,169,255,0.06);
+    border-left: 2px solid var(--blue-electric);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-bottom: 28px;
+  }
+  .proof-text {
+    font-size:14px; line-height:1.65;
+    color:var(--white-dim); font-style:italic;
+  }
+  .proof-text strong { color:var(--white); font-style:normal; font-weight:400; }
+  .proof-author {
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--blue-glow); margin-top:8px; font-style:normal;
+  }
+
+  /* URGÊNCIA */
+  .urgency {
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    color:rgba(63,169,255,0.6);
+    margin-bottom:24px;
+  }
+  .urgency-dot {
+    width:6px; height:6px; border-radius:50%;
+    background:var(--blue-electric);
+    animation: blink 1.6s ease-in-out infinite;
+    flex-shrink:0;
+  }
+  @keyframes blink {
+    0%,100%{ opacity:1; } 50%{ opacity:.3; }
+  }
+
+  /* BOTÕES */
+  .btn {
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'DM Sans',sans-serif; font-size:14px; font-weight:400;
+    letter-spacing:.5px; text-decoration:none;
+    border-radius:50px; padding:14px 28px;
+    cursor:pointer; border:none;
+    transition:all .3s cubic-bezier(.16,1,.3,1);
+    width:100%; justify-content:center;
+  }
+
+  .btn-ghost {
+    background:transparent;
+    border:1px solid rgba(63,169,255,0.3);
+    color:var(--white-dim);
+  }
+  .btn-ghost:hover {
+    border-color:rgba(63,169,255,0.6);
+    color:var(--white);
+    background:rgba(63,169,255,0.06);
+  }
+
+  .btn-solid {
+    background:linear-gradient(135deg, #1a7fe8, #0d3b6e);
+    color:var(--white);
+    box-shadow:0 0 32px rgba(26,127,232,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    font-size:15px; font-weight:400; letter-spacing:.3px;
+    padding:16px 32px;
+  }
+  .btn-solid:hover {
+    transform:translateY(-2px);
+    box-shadow:0 0 52px rgba(26,127,232,0.45), 0 16px 40px rgba(0,0,0,0.4);
+  }
+  .btn-solid:active { transform:translateY(0); }
+
+  .btn svg { flex-shrink:0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align:center; padding-top:64px;
+    opacity:0; animation:rise 1s 1.2s forwards;
+  }
+  .footer-line {
+    width:1px; height:48px;
+    background:linear-gradient(to bottom, rgba(63,169,255,0.3), transparent);
+    margin:0 auto 24px;
+  }
+  .footer-name {
+    font-family:'Cormorant Garamond',serif;
+    font-size:18px; font-weight:300; letter-spacing:2px;
+    color:var(--white-dim); margin-bottom:6px;
+  }
+  .footer-crn {
+    font-size:10px; letter-spacing:3px; text-transform:uppercase;
+    color:rgba(63,169,255,0.35); margin-bottom:8px;
+  }
+  .footer-phone {
+    font-size:12px; color:rgba(63,169,255,0.4); letter-spacing:.5px;
+  }
+
+  /* MOBILE */
+  @media(max-width:520px){
+    .hero { padding:64px 0 0; }
+    .feedback-card, .consulta-card { padding:30px 24px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="logo-mark">M</div>
+
+    <p class="hero-tag">Maysa Ando · Nutricionista</p>
+
+    <h1 class="hero-headline">
+      Você já tem o <em>mapa.</em><br>
+      Agora é hora de caminhar.
+    </h1>
+
+    <p class="hero-sub">
+      O ebook te mostrou que é possível comer fora de casa sem culpa e sem perder o rumo.
+      O próximo passo é fazer isso funcionar <strong>na sua rotina</strong>.
+    </p>
+
+    <div class="hero-divider"></div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <div class="block" id="b1">
+    <div class="section-label">Feedback</div>
+    <div class="feedback-card">
+      <span class="feedback-icon">✈️</span>
+
+      <h2 class="feedback-title">
+        O que ficou com você<br><em>depois de ler?</em>
+      </h2>
+
+      <p class="feedback-body">
+        Uma frase, uma virada, um alívio — cada mensagem que recebo me mostra que esse conteúdo chegou onde precisava.
+        <strong>Me conta o que mudou pra você.</strong>
+      </p>
+
+      <a class="btn btn-ghost"
+         href="https://wa.me/5511920069644?text=Ol%C3%A1%2C%20Maysa!%20%E2%9C%88%EF%B8%8F%20Acabei%20de%20ler%20o%20e-book%20e%20quero%20te%20contar%20o%20que%20achei%3A"
+         target="_blank" rel="noopener">
+        Enviar meu feedback
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- CONSULTA -->
+  <div class="block" id="b2">
+    <div class="section-label">Acompanhamento</div>
+    <div class="consulta-card">
+
+      <h2 class="consulta-headline">
+        Estratégia você já tem.<br>
+        Falta alguém para <em>adaptar à sua vida.</em>
+      </h2>
+      <p class="consulta-sub">É exatamente isso que o acompanhamento faz.</p>
+
+      <p class="consulta-body">
+        Saber o que fazer é diferente de conseguir fazer no dia a dia —
+        no almoço corrido, na viagem de última hora, no cansaço de uma quinta-feira.
+        <strong>Trabalho com você para tornar essas escolhas automáticas, sem força de vontade o tempo inteiro.</strong>
+      </p>
+
+      <div class="proof">
+        <p class="proof-text">"Depois de dois meses com a Maysa, parei de me sentir culpada em restaurante. Finalmente entendo o que funciona pra mim."</p>
+        <p class="proof-author">— Renata M., cliente há 5 meses</p>
+      </div>
+
+      <div class="urgency">
+        <span class="urgency-dot"></span>
+        Poucas vagas disponíveis em junho
+      </div>
+
+      <a class="btn btn-solid"
+         href="https://wa.me/5511920069644?text=Ol%C3%A1%2C%20Maysa!%20Li%20o%20e-book%20e%20quero%20dar%20o%20pr%C3%B3ximo%20passo.%20Como%20funciona%20o%20acompanhamento%20nutricional%3F"
+         target="_blank" rel="noopener">
+        Quero agendar minha consulta
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-line"></div>
+    <p class="footer-name">Maysa Ando</p>
+    <p class="footer-crn">Nutricionista · CRN-3 87965</p>
+    <p class="footer-phone">(11) 92006-9644</p>
+  </footer>
+
+</div>
+
+<script>
+// CANVAS — orbs + particles
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+
+const orbs = [
+  {x:.18, y:.28, r:340, c:'rgba(13,59,110,0.2)'},
+  {x:.82, y:.72, r:290, c:'rgba(26,127,232,0.11)'},
+  {x:.5,  y:.05, r:220, c:'rgba(63,169,255,0.07)'},
+];
+
+const pts = Array.from({length:65},()=>({
+  x:Math.random(), y:Math.random(),
+  vx:(Math.random()-.5)*.24, vy:(Math.random()-.5)*.24,
+  r:Math.random()*1.3+.3,
+  hue:Math.random()*25+205,
+  life:Math.random()*400,
+  max:Math.random()*280+160
+}));
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const t = Date.now()*.00028;
+  orbs.forEach(o=>{
+    const ox=Math.sin(t+o.x*8)*28, oy=Math.cos(t*.65+o.y*8)*20;
+    const g=ctx.createRadialGradient(o.x*W+ox,o.y*H+oy,0,o.x*W+ox,o.y*H+oy,o.r);
+    g.addColorStop(0,o.c); g.addColorStop(1,'transparent');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  });
+  pts.forEach(p=>{
+    p.life++;
+    if(p.life>p.max){ p.x=Math.random(); p.y=Math.random(); p.life=0; }
+    const a = Math.sin(Math.PI*p.life/p.max)*.45;
+    ctx.beginPath(); ctx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${p.hue},88%,74%,${a})`; ctx.fill();
+    p.x+=p.vx/W; p.y+=p.vy/H;
+    if(p.x<0||p.x>1)p.vx*=-1; if(p.y<0||p.y>1)p.vy*=-1;
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+// SCROLL REVEAL
+const blocks = document.querySelectorAll('.block');
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+},{threshold:.1});
+blocks.forEach(b=>observer.observe(b));
+</script>
+</body>
+</html>
