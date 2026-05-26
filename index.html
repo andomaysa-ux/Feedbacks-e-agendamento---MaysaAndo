@@ -536,7 +536,7 @@ document.getElementById('fb-send').addEventListener('click', () => {
   const bars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
   const note = document.getElementById('cfield').value.trim();
   let msg = `Ola, Maysa. Li o e-book e quero deixar meu feedback.`;
-  if(rating) msg += `\n\nAvaliacao: ${bars} (${rating}/5)`;
+  if(rating) msg += `\n\nAvaliação: ${bars} (${rating}/5)`;
   if(note)   msg += `\n\n${note}`;
   window.open('https://wa.me/5511920069644?text=' + encodeURIComponent(msg), '_blank', 'noopener');
 });
